@@ -31,7 +31,9 @@
         </div>
 
         <div class="col-md-12 mt-3">
-            {{ $news->story }}
+             @php
+                 echo $news->story;
+             @endphp
         </div>
 
         <div class="col-md-12 mt-3">
@@ -52,5 +54,6 @@
                 <h4>COMMENTS</h4>
         </div>
     </div>
+    @include('partials.comments')
 </div>
 @endsection

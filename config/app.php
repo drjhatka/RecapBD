@@ -237,6 +237,8 @@ return [
         'LogicHelper'=>App\Http\Controllers\LogicHelper::class,
         'FormHelper'=>App\Http\Controllers\FormHelper::class,
         'FrontendController'=>App\Http\Controllers\FrontendController::class,
+        'Comment'=>App\Models\Comment::class,
+
 
 
 

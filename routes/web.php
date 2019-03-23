@@ -13,11 +13,12 @@
 
 
 //frontend routes
-Route::get('/', 'FrontendController@index')->name('home');
-Route::get('/show-news/{id}', 'FrontendController@showNews')->name('show.frontend.news');
+    Route::get('/', 'FrontendController@index')->name('home');
+    Route::get('/show-news/{id}', 'FrontendController@showNews')->name('show.frontend.news');
+//comment routes
+    Route::post('/comments/{id}', 'CommentController@postComment')->name('add.comment');
 
 //backend routes
-
 //login routes
     Route::get('/login', 'LoginController@loginForm')->name('login');
     Route::post('/login', 'LoginController@login')->name('login.post');

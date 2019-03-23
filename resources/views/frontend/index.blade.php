@@ -77,7 +77,7 @@
                                             <div class="col-md-4 col-sm-4 mt-1 mb-1">
                                                     <a href="{{ route('show.frontend.news',$news->id) }}">
                                                             <img src="{{ $news->image_path }}" alt="" class="img-fluid">
-                                                            <strong>{{ $news->title }}</strong>
+                                                            <strong>{{ $news->title.' ID = '.$news->id }}</strong>
                                                     </a>
                                             </div>
                                             @endforeach
@@ -94,7 +94,7 @@
                                             <div class="col-md-4 col-sm-4 mt-1 mb-1">
                                                     <a href="{{ route('show.frontend.news',$news->id) }}">
                                                             <img src="{{ $news->image_path }}" alt="" class="img-fluid">
-                                                            <strong>{{ $news->title }}</strong>
+                                                            <strong>{{ $news->title.' ID = '.$news->id }}</strong>
                                                     </a>
                                             </div>
                                             @endforeach
@@ -115,7 +115,7 @@
                                         <div class="col-md-4 col-sm-4 mt-1 mb-1">
                                                 <a href="{{ route('show.frontend.news',$news->id) }}">
                                                         <img src="{{ $news->image_path }}" alt="" class="img-fluid">
-                                                        <strong>{{ $news->title }}</strong>
+                                                        <strong>{{ $news->title.' ID = '.$news->id }}</strong>
                                                 </a>
                                         </div>
                                     @endforeach
@@ -134,7 +134,7 @@
                                     @foreach(FrontendController::getCategoryNewsList('Free Speech') as $news)
                                         <div class="col-md-4 col-sm-4 mt-1 mb-1">
                                             <img src="{{ $news->image_path }}" alt="" class="img-fluid">
-                                            <strong>{{ $news->title }}</strong>
+                                            <strong>{{ $news->title.' ID = '.$news->id }}</strong>
                                         </div>
                                     @endforeach
                                 @else
@@ -154,7 +154,7 @@
                                 <div class="col-md-4 col-sm-4 mt-1 mb-1">
                                         <a href="{{ route('show.frontend.news',$news->id) }}">
                                                 <img src="{{ $news->image_path }}" alt="" class="img-fluid">
-                                                <strong>{{ $news->title }}</strong>
+                                                <strong>{{ $news->title.' ID = '.$news->id }}</strong>
                                         </a>
                                 </div>
                                 @endforeach
