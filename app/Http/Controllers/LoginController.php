@@ -36,11 +36,11 @@ class LoginController extends Controller
                     // redirect them to the secure section or whatever
                         return redirect()->route('dashboard');
                 }
-                //else {
+                else {
                     // validation not successful, send back to form
-                  //  return redirect('login');
+                    return redirect('login')->with('login_error','Wrong Login Credentials, Try Again!');
 
-                //}
+                }
 
         }//end method
 

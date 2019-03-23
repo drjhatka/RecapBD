@@ -4,7 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Tag extends Model
-{
-    //
+class Tag extends Model{
+
+    public $timestamps = false;
+
+
+    public function news()
+    {
+
+        return $this->belongsTo('App\Models\News');
+    }
+
 }

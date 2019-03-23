@@ -33,10 +33,12 @@
 
                         <div class="col-md-12 mb-2" style="font-weight: bold; font-size:13px;
                                     padding:10px; border-bottom:1px solid lightblue; ">
-                                Reported By:{{ $news->input_by }}
+                                Reported By: {{ $news->posted_by }} Date: {{ $news->created_at }} Updated at: {{ $news->updated_at }}
                         </div>
                         <div class="col-md-12" style="font-weight: bold; font-size:13px;">
-                            {{ $news->story }}
+                            @php
+                                echo $news->story;
+                            @endphp
                         </div>
                     </div>
 

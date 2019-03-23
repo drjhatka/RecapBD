@@ -8,6 +8,12 @@
                     News Management
             </div>
 
+            <div class="col-md-12 mt-2">
+                <a href="{{ route('show.news') }}">
+                    <span class="badge badge-danger py-2"> <i class="fa fa-hand-o-left fa-2x"></i> Go Back</span>
+
+                </a>
+            </div>
             @if (Session::has('search_empty'))
                 @php
                     $msg= Session::get('search_empty');
@@ -26,18 +32,8 @@
                                 {!! Form::text('search', '', ['class'=>'col-md-12 form-input-text',
                                                 'placeholder'=>'Search news']) !!}
                             </div>
-                            <!--
-                            <div class="col-md-7" style="font-weight: bold;">
-                                <div class="row">
-                                    {!! Form::label('start_date', 'From', ['class'=>'col-md-2 text-danger']) !!}
-                                    {!! Form::date('start_date', '', ['class'=>'col-md-4 form-control']) !!}
 
-                                    {!! Form::label('end_date', 'To', ['class'=>'col-md-2 text-danger']) !!}
-                                    {!! Form::date('end_date', '', ['class'=>'col-md-4 form-control']) !!}
 
-                                </div>
-                            </div>
-                        -->
                             <div class="col-md-12 mt-4 pb-1" style="border-bottom:2px solid red;">
                                 {!! Form::submit('Search', ['class'=>'col-md-2 offset-5 btn btn-primary']) !!}
                             </div>

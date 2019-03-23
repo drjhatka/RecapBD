@@ -1,18 +1,27 @@
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
 <div class="container">
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Login</div>
-                    <div class="panel-body">
+                <div class="card card-default">
+                    <div class="card-header bg-warning text-center" style="color:white; font-weight:bold;" >Admin Login</div>
+                    @if (Session::has('login_error'))
+                        <div class="alert alert-warning text-center" role="alert">
+                           <strong style="color:red; font-weight:bold;">
+                                {{ Session::get('login_error') }}
+                        </strong>
+                        </div>
+                    @endif
+                    <div class="card-body">
                         <form class="form-horizontal" role="form" method="POST" action="{{ route('login.post') }}">
                             {{ csrf_field() }}
 
-                            <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                                <label for="user_id" class="col-md-4 control-label">E-Mail Address</label>
+                            <div class="form-group{{ $errors->has('user_id') ? ' has-error' : '' }}">
+                                <label for="user_id" class="col-md-4 control-label">User ID</label>
 
                                 <div class="col-md-6">
-                                    <input id="user_id" type="text" class="form-control" name="user_id" value="{{ old('email') }}" required autofocus>
+                                    <input id="user_id" type="text" class="form-control" name="user_id" value="{{ old('user_id') }}" required autofocus>
 
                                     @if ($errors->has('user_id'))
                                         <span class="help-block">

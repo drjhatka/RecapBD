@@ -2,129 +2,134 @@
 
 namespace App\Http\Controllers;
 
-use News;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use DB;
-use LogicHelper;
 use Session;
+use Category;
+use LogicHelper;
+use News;
+use Tag;
 
 class NewsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+    //constructor
+    public function __construct(){
+        $this->middleware('auth:admin');
+    }
+
     public function index()
     {
-        return view('frontend.index');
+        return view('backend.dashboard');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
-        //
+        return view('backend.add-news');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request){
         //validate the data
-        $validator = Validator::make($request->all(), [
-            'news_title' => 'required|min:20|max:150',
-            'news_short_desc' => 'required|max:250|min:10',
-            'news_story' => 'required|max:2500|min:10',
+            $validator = Validator::make($request->all(), [
+                'news_title' => 'required|min:20|max:150',
+                'news_short_desc' => 'required|max:250|min:10',
+                'news_story' => 'required|max:2500|min:10',
 
-        ]);
+            ]);
+
         //if validation fails laravel will automatically redirect to previous page
             $validator->validate();
-        //check if at least one image exists!
 
+        //check if at least one image exists!
 
         //validation successful proceed with saving the record
         //and also add record to linked/ junction tables
             $news = new News;
             $news->title= $request->news_title;
-            $news->short_desc= $request->news_title;
-            $news->story= $request->news_short_desc;
+            $news->short_desc= $request->news_short_desc;
+            $news->story= $request->news_story;
+            $news->image_path=url('/').$request->filepath;
 
-        //check dropdown options
-        switch ($request->input('news_category')) {
+            if($request->has('is_featured')){
+                $news->is_featured='Y';
+            }
+            else{
+                $news->is_featured='N';
+            }
+
+        //check dropdown inputs
+            $category = new Category();
+
+            switch ($request->input('news_category')) {
                 case 'w':
-                    $news->category= 1;
-                //add record to link table
-                    DB::table('news_categories')->insert([
-                            'news_id'=>LogicHelper::getLastPK()+1, 'category_id'=>1]);
+                    //$news->category_id= 1;
+                    $category->description = 'Women & Children';
+                    $category->save();
+                    //add record to link table
+                     $news->category()->associate($category);
                 break;
 
                 case 'm':
-                    $news->category= 2;
-                //add record to link table
-                        DB::table('news_categories')->insert(['news_id'=>LogicHelper::getLastPK()+1,
-                                'category_id'=>2]);
+                    //$news->category_id= 2;
+                    $category->description = 'Minority';
+                    $category->save();
+                    //add record to link table
+                    $news->category()->associate($category);
                 break;
 
                 case 'f':
-                        $news->category= 3;
-                        DB::table('news_categories')->insert(['news_id'=>LogicHelper::getLastPK()+1,
-                        'category_id'=>3]);
-
+                    //$news->category_id= 3;
+                    $category->description = 'Free Speech';
+                    $category->save();
+                    //add record to link table
+                    $news->category()->associate($category);
                 break;
 
-            }
-        $news->input_by= auth('admin')->user()->name;
+                case 'd':
+                   // $news->category_id= 4;
+                    $category->description = 'Democracy';
+                    $category->save();
+                    //add record to link table
+                    $news->category()->associate($category);
+                break;
+            }//end switch
 
-        //check if either follow up checkboxes are selected
+            $news->posted_by= auth('admin')->user()->name;
 
-        if($request->has('followup_parent')){
-            $news->is_followup_parent='Y';
-            // add record to linked table
-            DB::insert('insert into news_followups (followup_parent_id, followup_child_id) values (?, ?)',
-             [LogicHelper::getLastPK()+1, null]);
+            $news->save();
 
-        }
+            //create Tags
+            $tag_array= LogicHelper::getTagList();
 
-        elseif($request->has('followup_child')){
-             $news->is_followup_parent ='N';
-             $parent_id= $request->followup_parent_id;
-
-             DB::insert('insert into news_followups (followup_parent_id, followup_child_id) values (?, ?)',
-             [$parent_id, LogicHelper::getLastPK()+1 ]);
-            }
-        $news->save();
+            for ($i=0; $i<=count($tag_array) ; $i++) {
+                if(($request->has('tag_'.($i+1)))){
+                    $tag = new Tag();
+                    //create new tag
+                    $tag->description=$tag_array[$i];
+                   // $tag->save();
+                    $news->tags()->save($tag);
+                }//end if
+            }//end for
 
         Session::flash('add_success','News Added Successfully!');
         return redirect()->route('add.news');
     }//end method
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\News  $news
-     * @return \Illuminate\Http\Response
-     */
     public function show(News $news)
     {
         return view('backend.view-news');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\News  $news
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Request $request)
-    {
+    public function showIndvNews($id){
+        return view('backend.view-individual-news')->with('id',$id);
+    }
+
+    public function showEditForm($id){
+        return view('backend.edit-news')->with('id',$id);
+    }
+
+    public function edit(Request $request){
          //validate the data
          $validator = Validator::make($request->all(), [
             'news_title' => 'required|min:20|max:150',
@@ -136,66 +141,65 @@ class NewsController extends Controller
             $validator->validate();
         //check if at least one image exists!
 
-
         //validation successful proceed with saving the record
         //and also add record to linked/ junction tables
             $news = News::find($request->id);
-            //dd($news);
             $news->title= $request->news_title;
             $news->short_desc= $request->news_title;
             $news->story= $request->news_short_desc;
 
         //check dropdown options
+
         switch ($request->input('news_category')) {
                 case 'w':
-                    $news->category= 1;
-                //edit record to link table
-                    DB::statement('update news_categories set category_id = '.$news->category.
-                                                ' where news_categories.news_id = ?' ,[$request->id]);
+                    //edit record to link table
+                    $news->category()->update(['description'=>'Women & Children']);
                 break;
 
                 case 'm':
-                    $news->category= 2;
-                //edit record to link table
-                    DB::statement('update news_categories set category_id = '.$news->category.
-                    ' where news_categories.news_id =?',[$request->id]);
+                    //edit record to link table
+                    $news->category()->update(['description'=>'Minority']);
                 break;
 
                 case 'f':
-                        $news->category= 3;
-                        DB::statement('update news_categories set category_id = '.$news->category.
-                        ' where news_categories.news_id = ?' ,[$request->id]);
+                    //edit record to link table
+                    $news->category()->update(['description'=>'Free Speech']);
+                break;
+
+                case 'd':
+                //edit record to link table
+                $news->category()->update(['description'=>'Democracy']);
                 break;
 
             }
-        $news->input_by= auth('admin')->user()->name;
+        //posted by
+        $news->posted_by= auth('admin')->user()->name;
+        $news->image_path= $request->filepath;
 
-        //check if either follow up checkboxes are selected
-
-        if($request->has('followup_parent')){
-            $news->is_followup_parent='Y';
-
-            //delete previous record
-            DB::statement('delete from news_followups where news_followups.followup_parent_id='.$request->id);
-
-            // edit record to linked table
-            DB::statement('update news_followups set followup_child_id='.DB::raw(null).
-                                ' where news_followups.news_id = ?' ,[$request->id]);
-
+        if($request->has('is_featured')){
+            $news->is_featured='Y';
+        }
+        else{
+            $news->is_featured='N';
         }
 
-        elseif($request->has('followup_child')){
+            //delete previous relations first
+                $news->tags()->delete();
 
-            //delete previous record
-                DB::statement('delete from news_followups where news_followups.followup_parent_id='.$request->id);
+            $news->save();
+        //now insert new relation
+            $tag_array= LogicHelper::getTagList();
 
-             $news->is_followup_parent ='N';
-             $parent_id= $request->followup_parent_id;
+            for ($i=0; $i<=count($tag_array) ; $i++) {
+                if(($request->has('tag_'.($i+1)))){
+                    //create new tag
+                    $tag = new Tag();
+                    $tag->description=$tag_array[$i];
+                   // $tag->save();
+                    $news->tags()->save($tag);
+                }//end if
+            }//end for
 
-             DB::insert('insert into news_followups (followup_parent_id, followup_child_id) values (?, ?)',
-             [$parent_id, $request->id ]);
-        }
-        $news->save();
 
         Session::flash('edit_success','News Updated Successfully!');
         return redirect()->route('show.edit', $news->id);
@@ -219,8 +223,21 @@ class NewsController extends Controller
      * @param  \App\Models\News  $news
      * @return \Illuminate\Http\Response
      */
-    public function destroy(News $news)
+    public function delete($news_id)
     {
-        //
+        $news = News::find($news_id);
+
+        //delete linked category record
+
+        $news->category()->delete();
+        $news->tags()->delete();
+
+        //delete news
+        $news->delete();
+
+        Session::flash('delete_success','News Successfully Deleted!');
+
+        return redirect()->route('add.editorial');
+
     }
 }

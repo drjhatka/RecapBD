@@ -1,22 +1,23 @@
 @extends('layouts.layout-backend')
-
 @section('content')
 
+<script src="/vendor/laravel-filemanager/js/lfm.js"></script>
 
-@if (Session::has('add_success'))
-@php
-    $msg= Session::get('add_success');
 
-@endphp
-<script type="text/javascript">
-    var msg="<?php echo $msg ?>";
-    alert(msg);
-</script>
-@endif
+<div class="col-md-10 bg-light mt-2" >
+        @php
+            echo FormHelper::createFormHeader('Add News');
+        @endphp
 
-<div class="col-md-10" >
-    <div class="card mt-2" style="background: #d1eeee;">
-        <h5 class="card-header text-center text-danger">Add News</h5>
+        @if (Session::has('add_success'))
+            @php
+                $msg= Session::get('add_success');
+            @endphp
+                <div class="col-md-12  mt-2 alert alert-success alert-block">
+                    <button type="button" class="close" data-dismiss="alert">×</button>
+                        <strong>{{ $msg }}</strong>
+                </div>
+        @endif
 
         @if (count($errors)!=0)
             <div class="row mt-2">
@@ -24,134 +25,81 @@
                         <h5 class="card-header text-danger">The Following errors occured</h5>
                     </div>
             </div>
-
         @endif
 
-            @if (!is_null(LogicHelper::generateErrorDiv($errors)))
+        @if (!is_null(LogicHelper::generateErrorDiv($errors)))
+            @foreach (LogicHelper::generateErrorDiv($errors) as $error)
+                @php
+                    echo($error);
+                @endphp
+            @endforeach
+        @endif
 
-                @foreach (LogicHelper::generateErrorDiv($errors) as $error)
-                    @php
-                        echo($error);
-                    @endphp
-                @endforeach
-
-            @endif
         <div class="card-body">
-
             {!! Form::open(['route'=>'post.news']) !!}
+                @php
+                    $tag_list = LogicHelper::getTagList();
+                    $tag_input_list= array();
+                    $dropdown_option_array= ['w'=>'Women & Children','m'=>'Minority','f'=>'Free Speech', 'd'=>'Democracy'];
 
+                        for($i=0; $i<count($tag_list); $i++){
+                            array_push( $tag_input_list,('tag_'.($i+1)));
+                        }
+                    echo FormHelper::createTextInputBlock('news_title', 'News Title', 2, 10);
+                    echo FormHelper::createTextAreaBlock('news_short_desc', 'Short Description', 3);
+                @endphp
 
-            {!! Form::label('news_title', 'Title', ['class'=>'col-md-2 text-danger form-label']) !!}
-
-
-            {!! Form::text('news_title', '',['class'=>'col-md-9 form-input-text']) !!}
-
-
-<hr>
-            {!! Form::label('news_short_desc', 'Short Desc (100 words max)',
-                            ['class'=>'col-md-6 text-danger form-label']) !!}
-
-
-            {!! Form::textarea('news_short_desc', '',
-                        ['class'=>'col-md-10 offset-1 text-danger form-input-textarea']) !!}
-
-<hr>
-
-
-            {!! Form::label('news_story', 'Story', ['class'=>'col-md-2 text-danger form-label']) !!}
-
-            {!! Form::textarea('news_story', '',
-                        ['class'=>'col-md-10 offset-1 text-danger', 'id'=>'editor']) !!}
-<hr>
-
-
-            {!! Form::label('news_category', 'Select Category', ['class'=>'col-md-3 text-danger form-label']) !!}
-
-            {!! Form::select('news_category',
-                ['w'=>'women & children', 'm'=>'minority', 'f'=>'free speech'], true,['class'=>'col-md-5 form-input-text']) !!}
-
-
-
-            <div class="row mt-4 bg-light">
-                {!! Form::label('followup_parent', 'Is Follow Up Base News?', ['class'=>'col-md-3  offset-1 text-success form-label']) !!}
-                {!! Form::checkbox('followup_parent', null, false, ['class'=>'col-md-2  mt-2',
-                'id'=>'followup_parent']) !!}
-
-                {!! Form::label('followup_child', 'Is Follow Up Child News?', ['class'=>'col-md-3 text-success form-label']) !!}
-                {!! Form::checkbox('followup_child', null, false, ['class'=>'col-md-2 mt-2',
-                'id'=>'followup_child']) !!}
-
-
-            <div class="col-md-12" id="parent_id">
                 <div class="row">
-                    {!! Form::label('followup_parent_id', 'Followup Base News ID', ['class'=>'col-md-5 form-text-input  offset-1 text-success form-label']) !!}
-                    {!! Form::text('followup_parent_id', '', ['class'=>'col-md-3']) !!}
-
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                          <a id="lfm" data-input="thumbnail" data-preview="holder" class="btn btn-primary">
+                            <i class="fa fa-picture-o"></i> Choose News Display Image
+                          </a>
+                        </span>
+                        <input id="thumbnail" class="form-control " type="text" style="color:red; font-weight:bold;" name="filepath" readonly >
+                      </div>
+                      <img id="holder" style="margin-top:15px;max-height:100px;">
                 </div>
 
-            </div>
 
-            </div>
+                @php
+                    echo FormHelper::createTextAreaBlock('news_story','Story', 5,'editor');
+                    echo FormHelper::createDropdownBlock('news_category','Select Category',$dropdown_option_array,false);
+                    echo FormHelper::createCheckboxBlock($tag_input_list, $tag_list);
+                @endphp
 
+                <div class="row bg-info mt-2">
+                    {!! Form::label('is_featured', 'Is Featured News?', ['class'=>'col-md-3 offset-3', 'style'=>'color:white; font-weight:bold; text-align:right;']) !!}
 
-            {!! Form::submit('Save', ['class'=>'col-md-2 offset-3 mt-4  btn btn-success']) !!}
+                    {!! Form::checkbox('is_featured', '', false, ['class'=>'col-md-1 mt-2']) !!}
+                </div>
+
+                @php
+                    echo FormHelper::createSubmitBlock('Add News');
+                @endphp
 
 
             {!! Form::close() !!}
-
-        </div>
-    </div>
-
-</div>
-
-<script src="{{ asset('vendor/unisharp/laravel-ckeditor/ckeditor.js') }}"></script>
-
-<script type="text/javascript">
-    CKEDITOR.replace('editor',{
+        </div> <!--end card body -->
+    </div> <!--end main container -->
 
 
-        filebrowserImageBrowseUrl: '/laravel-filemanager?type=Images',
-    //  filebrowserImageUploadUrl: '/laravel-filemanager/upload?type=Images&_token=',
-        filebrowserBrowseUrl: '/laravel-filemanager?type=Files',
-        //config.removeModules = 'UploadFileButton';
-    // filebrowserUploadUrl: '/laravel-filemanager/upload?type=Files&_token='
-        /*
-        filebrowserBrowseUrl : '/ckfinder/ckfinder.html',
-        filebrowserImageBrowseUrl : '/ckfinder/ckfinder.html?Type=Images',
-        filebrowserFlashBrowseUrl : '/ckfinder/ckfinder.html?Type=Flash',
-        filebrowserUploadUrl : '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Files',
-        filebrowserImageUploadUrl : '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Images',
-        filebrowserFlashUploadUrl : '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Flash'
-*/
-    });
-
+    <script src="{{ asset('vendor/unisharp/laravel-ckeditor/ckeditor.js') }}"></script>
+    <script type="text/javascript">
+        CKEDITOR.replace('editor',{
+            filebrowserImageBrowseUrl: '/laravel-filemanager?type=Images',
+            filebrowserBrowseUrl: '/laravel-filemanager?type=Files',
+            filebrowserUploadUrl: '/uploader/upload.php'
+        });
     </script>
 
     <script>
-            $(function() {
-                $('#parent_id').hide();
-                $('#followup_parent').change(function(){
-                    if(this.checked){
-                        //disable the child checkbox
-                        $('#followup_child').prop('checked', false);
-                        $('#parent_id').fadeOut(1000);
+        $(document ).ready(function() {
+            // Handler for .ready() called.
+            $('#lfm').filemanager('image');
 
-                    }
-
-                })
-
-                $('#followup_child').change(function(){
-                    if(this.checked){
-                        //disable the child checkbox
-                        $('#followup_parent').prop('checked', false);
-                        $('#parent_id').fadeIn(1000);
-                    }
-
-                })
-
-
-              });
-
+          });
     </script>
-
 @endsection
+
+

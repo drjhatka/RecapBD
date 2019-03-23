@@ -19,10 +19,10 @@ class CreateNewsTable extends Migration
             $table->string('title');
             $table->string('short_desc');
             $table->text('story');
-            $table->integer('category');
-            $table->string('input_by');
-            $table->char('is_followup_parent')->size(1);
-
+            $table->string('posted_by');
+            $table->integer('category_id');
+            $table->string('image_path');
+            $table->char('is_featured')->size(1);// either Y or N
         });
     }
 

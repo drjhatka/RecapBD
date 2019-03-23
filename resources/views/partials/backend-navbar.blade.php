@@ -1,5 +1,5 @@
 
-
+<div class="col-md-12 bg-dark">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <a class="navbar-brand" href="#">Admin Area</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
@@ -13,7 +13,7 @@
                 <ul class="nav navbar-nav">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle float-right" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-user"></i>  User
+                            <i class="fa fa-user"></i>  {{ Auth::user()->name}}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item disabled" href="#"><i class="fa fa-wrench"></i> Profile</a>
@@ -24,3 +24,5 @@
             </div>
         </nav>
 
+
+</div>

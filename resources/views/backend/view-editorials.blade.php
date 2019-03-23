@@ -5,7 +5,7 @@
     <div class="col-md-10" style="	background:#D1EEEE">
 
             <div class="col-md-11 ml-1 bg-success text-white card-header">
-                    News Management
+                    Editorial Management
             </div>
 
             @if (Session::has('search_empty'))
@@ -24,7 +24,7 @@
                 <div class="row">
                             <div class="col-md-12">
                                 {!! Form::text('search', '', ['class'=>'col-md-12 form-input-text',
-                                                'placeholder'=>'Search news']) !!}
+                                                'placeholder'=>'Search Editorials']) !!}
                             </div>
                             <!--
                             <div class="col-md-7" style="font-weight: bold;">
@@ -49,7 +49,7 @@
             <div class="col-md-12">
                 <div class="row">
                     @php
-                        $news_array= News::all();
+                        $editorial_array= Editorial::all();
                     @endphp
 
                     <div class="col-md-12">
@@ -60,26 +60,26 @@
                                     <th style="border-bottom:3px solid grey;"> Created </th>
                                     <th style="border-bottom:3px solid grey;"> Modify </th>
 
-                                @foreach ($news_array as $news)
+                                @foreach ($editorial_array as $editorial)
                                         <tr class="bg-light" style="border-bottom:10px solid grey;" >
-                                            <td class="text-danger" style="font-weight:bold;">{{ $news->id }}</td>
+                                            <td class="text-danger" style="font-weight:bold;">{{ $editorial->id }}</td>
 
                                             <td style="font-weight:bold; font-size:14px;">
-                                                <a style=" color:red;" href="{{ route('show.news.indv', $news->id) }}">
-                                                    {{ $news->title }}
+                                                <a style=" color:red;" href="{{ route('show.news.indv', $editorial->id) }}">
+                                                    {{ $editorial->title }}
                                                 </a>
                                             </td>
 
-                                            <td class="text-danger">{{ Carbon\Carbon::parse($news->created_at)->format('d/m/Y')}}</td>
+                                            <td class="text-danger">{{ Carbon\Carbon::parse($editorial->created_at)->format('d/m/Y')}}</td>
 
                                             <td class="text-danger" style="font-weight:bold;">
-                                                <a href="{{ route('show.news.indv', $news->id) }}"  style="text-decoration: none;">
+                                                <a href="{{ route('show.news.indv', $editorial->id) }}"  style="text-decoration: none;">
                                                     <span class="badge badge-pill badge-info" style="padding:5px;">View</span>
                                                 </a>
-                                                <a href="{{ route('show.edit',$news->id) }}">
+                                                <a href="{{ route('editorial.edit.form', $editorial->id) }}">
                                                     <span class="badge badge-pill badge-warning" style="padding:5px;">Edit</span>
                                                 </a>
-                                                <a href="{{ route('delete.news',$news->id) }}" onclick="return confirm('Are You Sure To Delete?')"
+                                                <a href="{{ route('delete.news',$editorial->id) }}" onclick="return confirm('Are You Sure To Delete?')"
                                                                 class="badge badge-pill badge-danger">
                                                     Delete
                                                 </a>

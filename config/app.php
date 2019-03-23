@@ -231,7 +231,14 @@ return [
         //custom classes
         'Admin'=>App\Models\Admin::class,
         'News'=>App\Models\News::class,
-        'LogicHelper'=>App\http\Controllers\LogicHelper::class,
+        'Editorial'=>App\Models\Editorial::class,
+        'Tag'=>App\Models\Tag::class,
+        'Category'=>App\Models\Category::class,
+        'LogicHelper'=>App\Http\Controllers\LogicHelper::class,
+        'FormHelper'=>App\Http\Controllers\FormHelper::class,
+        'FrontendController'=>App\Http\Controllers\FrontendController::class,
+
+
 
 
     ],

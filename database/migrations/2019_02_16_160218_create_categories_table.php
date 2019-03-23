@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateEditorialsTable extends Migration
+class CreateCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateEditorialsTable extends Migration
      */
     public function up()
     {
-        Schema::create('editorials', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             $table->increments('id');
-            $table->timestamps();
+            $table->string('description');
         });
     }
 
@@ -26,6 +26,6 @@ class CreateEditorialsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('editorials');
+        Schema::dropIfExists('categories');
     }
 }
